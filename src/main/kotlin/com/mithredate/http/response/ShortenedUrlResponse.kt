@@ -1,9 +1,9 @@
 package com.mithredate.http.response
 
+import com.mithredate.entity.ShortUrl
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.uri.UriBuilder
 import io.micronaut.serde.annotation.Serdeable
-import com.mithredate.entity.ShortUrl
 
 fun ShortUrl.toResponse(): JsonApiResponse<ShortUrlResource> =
     JsonApiResponse(

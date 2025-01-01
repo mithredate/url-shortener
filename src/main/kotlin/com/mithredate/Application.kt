@@ -5,12 +5,13 @@ import io.swagger.v3.oas.annotations.*
 import io.swagger.v3.oas.annotations.info.*
 
 @OpenAPIDefinition(
-    info = Info(
-        title = "URL Shortener",
-        version = "\${api.version}",
-        description = "\${openapi.description}",
-        contact = Contact(name = "Mehrdad Hedayati")
-    )
+    info =
+        Info(
+            title = "URL Shortener",
+            version = "\${api.version}",
+            description = "\${openapi.description}",
+            contact = Contact(name = "Mehrdad Hedayati"),
+        ),
 )
 object Api
 

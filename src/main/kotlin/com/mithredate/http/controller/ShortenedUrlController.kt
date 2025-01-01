@@ -12,13 +12,13 @@ import io.micronaut.http.annotation.Post
 
 @Controller("/api/v1/shortened-urls")
 class ShortenedUrlController(
-    private val shortUrlService: ShortUrlService
+    private val shortUrlService: ShortUrlService,
 ) {
     @Post("/")
     fun store(
         @Body request: ShortenUrlRequest,
-    ): HttpResponse<JsonApiResponse<ShortUrlResource>> {
-        return try {
+    ): HttpResponse<JsonApiResponse<ShortUrlResource>> =
+        try {
             val shortUrl = shortUrlService.shortenUrl(request.url, 8)
             val response = shortUrl.toResponse()
 
@@ -26,5 +26,4 @@ class ShortenedUrlController(
         } catch (e: IllegalArgumentException) {
             HttpResponse.badRequest()
         }
-    }
 }

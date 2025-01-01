@@ -29,7 +29,6 @@ class ShortUrlService(
         return ShortUrl(
             longUrl = longUrl,
             shortUri = shortUri,
-        )
-            .also { shortUrlRepository.save(it) }
+        ).also { shortUrlRepository.save(it) }
     }
 }

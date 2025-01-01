@@ -7,5 +7,6 @@ import io.micronaut.data.jpa.repository.JpaRepository
 @Repository
 interface ShortUrlRepository : JpaRepository<ShortUrl, Long> {
     fun findByShortUri(shortUri: String): ShortUrl?
+
     fun findByLongUrl(longUrl: String): ShortUrl?
 }
