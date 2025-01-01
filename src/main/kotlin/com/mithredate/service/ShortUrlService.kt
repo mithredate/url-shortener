@@ -12,8 +12,14 @@ class ShortUrlService(
     fun shortenUrl(
         longUrl: String,
         length: Int,
-    ): ShortUrl = ShortUrl(
-        longUrl = longUrl,
-        shortUri = longUrl.hashCode().absoluteValue.toString().take(length)
-    ).also { shortUrlRepository.save(it) }
+    ): ShortUrl =
+        ShortUrl(
+            longUrl = longUrl,
+            shortUri =
+                longUrl
+                    .hashCode()
+                    .absoluteValue
+                    .toString()
+                    .take(length),
+        ).also { shortUrlRepository.save(it) }
 }

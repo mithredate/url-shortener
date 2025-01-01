@@ -3,7 +3,6 @@ package com.mithredate.feature
 import com.mithredate.entity.ShortUrl
 import com.mithredate.repository.ShortUrlRepository
 import com.mithredate.service.ShortUrlService
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
