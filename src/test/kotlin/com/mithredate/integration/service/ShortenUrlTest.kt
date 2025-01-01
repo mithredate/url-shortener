@@ -2,18 +2,23 @@ package com.mithredate.integration.service
 
 import com.mithredate.repository.ShortUrlRepository
 import com.mithredate.service.ShortUrlService
-import com.mithredate.service.defaultUrlShortener
+import com.mithredate.service.UrlShortener
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import io.mockk.every
+import io.mockk.mockk
 import jakarta.inject.Inject
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
-@MicronautTest(environments = ["integration"])
+@MicronautTest(environments = ["integration"], startApplication = false)
 class ShortenUrlTest {
     @Inject
     private lateinit var shortUrlRepository: ShortUrlRepository
+
+    @Inject
+    private lateinit var defaultUrlShortener: UrlShortener
 
     @Test
     fun `should shorten url`() {
@@ -76,7 +81,9 @@ class ShortenUrlTest {
     fun `should create different short urls for hash collision`() {
         val longUrl1 = "https://www.google.com"
         val longUrl2 = "https://www.example.com"
-        val sut = ShortUrlService(shortUrlRepository, { url, length -> url.take(length) })
+        val urlShortener = mockk<UrlShortener>()
+        every { urlShortener.shortenUrl(any(), any()) } returnsMany listOf("shortUri", "shortUri", "shortUri2")
+        val sut = ShortUrlService(shortUrlRepository, urlShortener)
 
         val result1 = sut.shortenUrl(longUrl1, 8)
         val result2 = sut.shortenUrl(longUrl2, 8)

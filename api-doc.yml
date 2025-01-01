@@ -1,0 +1,104 @@
+openapi: 3.0.1
+info:
+  title: URL Shortener
+  description: A simple URL shortener service
+  contact:
+    name: Mehrdad Hedayati
+  version: v1.0
+paths:
+  /api/v1/shortened-urls:
+    post:
+      operationId: store
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShortenUrlRequest"
+        required: true
+      responses:
+        "200":
+          description: store 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonApiResponse_ShortUrlResource_"
+components:
+  schemas:
+    JsonApiResponse_ShortUrlResource_:
+      required:
+      - data
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/ShortUrlResource"
+        meta:
+          nullable: true
+          allOf:
+          - $ref: "#/components/schemas/Meta"
+        links:
+          nullable: true
+          allOf:
+          - $ref: "#/components/schemas/Links"
+    LinkObject:
+      required:
+      - href
+      type: object
+      properties:
+        href:
+          type: string
+        title:
+          type: string
+          nullable: true
+        describedby:
+          type: string
+          nullable: true
+    Links:
+      required:
+      - self
+      type: object
+      properties:
+        self:
+          type: string
+        related:
+          nullable: true
+          allOf:
+          - $ref: "#/components/schemas/LinkObject"
+    Meta:
+      required:
+      - total-count
+      type: object
+      properties:
+        total-count:
+          type: integer
+          format: int32
+    ShortUrlResource:
+      required:
+      - attributes
+      - id
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          $ref: "#/components/schemas/UrlAttributes"
+    ShortenUrlRequest:
+      required:
+      - url
+      type: object
+      properties:
+        url:
+          minLength: 1
+          type: string
+    UrlAttributes:
+      required:
+      - long-url
+      - short-uri
+      type: object
+      properties:
+        long-url:
+          type: string
+        short-uri:
+          type: string
