@@ -3,6 +3,7 @@ package com.mithredate.service
 import com.mithredate.entity.ShortUrl
 import com.mithredate.repository.ShortUrlRepository
 import io.micronaut.context.annotation.Bean
+import kotlin.math.absoluteValue
 
 @Bean
 class ShortUrlService(
@@ -11,6 +12,8 @@ class ShortUrlService(
     fun shortenUrl(
         longUrl: String,
         length: Int,
-    ): ShortUrl = ShortUrl(longUrl = longUrl, shortUri = "shortUri")
-        .run { shortUrlRepository.save(this) }
+    ): ShortUrl = ShortUrl(
+        longUrl = longUrl,
+        shortUri = longUrl.hashCode().absoluteValue.toString().take(length)
+    ).also { shortUrlRepository.save(it) }
 }
