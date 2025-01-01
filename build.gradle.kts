@@ -43,6 +43,7 @@ dependencies {
     testImplementation("org.testcontainers:postgresql")
     testImplementation("org.testcontainers:testcontainers")
     testImplementation("io.mockk:mockk")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
 }
 
 application {
