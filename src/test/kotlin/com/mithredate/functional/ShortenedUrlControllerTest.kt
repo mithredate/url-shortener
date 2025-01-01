@@ -13,7 +13,6 @@ import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.serde.ObjectMapper
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import jakarta.inject.Inject
-import org.hamcrest.CoreMatchers.not
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -37,7 +36,7 @@ class ShortenedUrlControllerTest {
                 client.toBlocking().exchange(request, JsonApiResponse::class.java)
             }
 
-        assertEquals("Bad Request", exception.message)
+        assertEquals(HttpStatus.BAD_REQUEST.code, exception.code())
     }
 
     @Test
@@ -58,12 +57,38 @@ class ShortenedUrlControllerTest {
         assertEquals(longUrl, data.attributes.longUrl)
         assertNotNull(data.attributes.shortUri)
 
-        shortUrlRepository.findByLongUrl(longUrl)?.let {
-            assertEquals(data.attributes.shortUri, it.shortUri)
-            assertEquals(longUrl, it.longUrl)
-            assertNotNull(it.id)
+        val existing =
+            shortUrlRepository.findByLongUrl(longUrl)?.let {
+                assertEquals(data.attributes.shortUri, it.shortUri)
+                assertEquals(longUrl, it.longUrl)
+                assertNotNull(it.id)
 
-            it
-        } ?: fail("ShortUrl not found in repository")
+                it
+            } ?: fail("ShortUrl not found in repository")
+
+        val retrievedRequest = HttpRequest.GET<String>("/api/v1/shortened-urls/${existing.shortUri}")
+        val retrievedResponse = client.toBlocking().exchange(retrievedRequest, String::class.java)
+
+        assertSame(HttpStatus.OK, retrievedResponse.status)
+        val retrievedData =
+            objectMapper
+                .readValue(
+                    retrievedResponse.body().byteInputStream(),
+                    Argument.of(JsonApiResponse::class.java, ShortUrlResource::class.java),
+                ).data as ShortUrlResource
+        assertEquals(existing.longUrl, retrievedData.attributes.longUrl)
+        assertEquals(existing.shortUri, retrievedData.attributes.shortUri)
+        assertEquals(existing.id.toString(), retrievedData.id)
+    }
+
+    @Test
+    fun `should return 404 when url does not exist`() {
+        val request = HttpRequest.GET<String>("/api/v1/shortened-urls/non-existing")
+        val exception =
+            assertThrows(HttpClientResponseException::class.java) {
+                client.toBlocking().exchange(request, JsonApiResponse::class.java)
+            }
+
+        assertEquals(HttpStatus.NOT_FOUND.code, exception.code())
     }
 }
