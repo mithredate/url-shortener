@@ -49,4 +49,34 @@ class ShortenUrlTest {
 
         assertNotEquals(result1.shortUri, result2.shortUri)
     }
+
+    @Test
+    fun `should create different short urls for different lengths`() {
+        val longUrl = "https://www.google.com"
+        every { shortUrlRepository.save(ofType<ShortUrl>()) } answers {
+            firstArg<ShortUrl>()
+        }
+        val sut = ShortUrlService(shortUrlRepository)
+
+        val result1 = sut.shortenUrl(longUrl, 8)
+        val result2 = sut.shortenUrl(longUrl, 10)
+
+        assertNotEquals(result1.shortUri, result2.shortUri)
+        assertSame(8, result1.shortUri.length)
+        assertSame(10, result2.shortUri.length)
+    }
+
+    @Test
+    fun `should create same short url for same long url`() {
+        val longUrl = "https://www.google.com"
+        every { shortUrlRepository.save(ofType<ShortUrl>()) } answers {
+            firstArg<ShortUrl>()
+        }
+        val sut = ShortUrlService(shortUrlRepository)
+
+        val result1 = sut.shortenUrl(longUrl, 8)
+        val result2 = sut.shortenUrl(longUrl, 8)
+
+        assertEquals(result1.shortUri, result2.shortUri)
+    }
 }
