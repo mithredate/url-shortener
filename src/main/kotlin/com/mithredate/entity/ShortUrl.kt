@@ -1,11 +1,9 @@
 package com.mithredate.entity
 
 import io.micronaut.core.annotation.Introspected
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.*
 import jakarta.validation.constraints.NotBlank
+import java.time.LocalDateTime
 
 @Introspected
 @Entity
@@ -17,4 +15,7 @@ data class ShortUrl(
     var longUrl: String = "",
     @field:NotBlank
     var shortUri: String = "",
+    // Add the created column
+    @Column(nullable = false, updatable = false)
+    var created: LocalDateTime = LocalDateTime.now()
 )
