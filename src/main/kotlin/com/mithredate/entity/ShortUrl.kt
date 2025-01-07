@@ -17,5 +17,5 @@ data class ShortUrl(
     var shortUri: String = "",
     // Add the created column
     @Column(nullable = false, updatable = false)
-    var created: LocalDateTime = LocalDateTime.now()
+    var created: LocalDateTime = LocalDateTime.now(),
 )

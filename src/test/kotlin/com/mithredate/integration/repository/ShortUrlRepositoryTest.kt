@@ -37,8 +37,14 @@ class ShortUrlRepositoryTest {
 
     @Test
     fun `should delete URLs if they are older than 1 day`() {
-        shortUrlRepository.save(ShortUrl(longUrl = "http://google.com/test", shortUri = "bla-bla"))
-        shortUrlRepository.save(ShortUrl(longUrl = "http://google.com/test2", shortUri = "bla-bla-2").apply {created = LocalDateTime.now().minusDays(2)})
+        shortUrlRepository.save(
+            ShortUrl(longUrl = "http://google.com/test", shortUri = "bla-bla")
+                .apply { created = LocalDateTime.now().minusDays(1).plusMinutes(1) },
+        )
+        shortUrlRepository.save(
+            ShortUrl(longUrl = "http://google.com/test2", shortUri = "bla-bla-2")
+                .apply { created = LocalDateTime.now().minusDays(1).minusMinutes(1) },
+        )
         val result = shortUrlRepository.deleteByCreatedBefore(LocalDateTime.now().minusDays(1))
 
         assertSame(1, result)
